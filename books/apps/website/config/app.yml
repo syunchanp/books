@@ -2,4 +2,9 @@
 # http://www.symfony-project.org/reference/1_4/en/11-App
 
 # default values
-#all:
+all:
+  sfSmarty:
+    class_path: /usr/local/hdp/php/smarty
+    template_extension: .tpl
+    template_secutrity: false
+
