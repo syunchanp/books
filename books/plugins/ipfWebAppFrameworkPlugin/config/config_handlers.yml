@@ -1,2 +1,6 @@
-modules/*/config/modules.yml:
-  class: sfMobileIPConfigHandler
+autoload:
+  ipfWebAppFramework:
+    name:       Framework classes
+    ext:        .php
+    path:       <?php echo realpath(dirname(__FILE__) . '/../lib') . "\n"; ?>
+    recursive:  on
