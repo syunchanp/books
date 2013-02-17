@@ -4,7 +4,6 @@
 # default values
 all:
   sfSmarty:
-    class_path: /usr/local/hdp/php/smarty
+    class_path: ../../php/smarty/distribution/libs/
     template_extension: .tpl
     template_secutrity: false
-
