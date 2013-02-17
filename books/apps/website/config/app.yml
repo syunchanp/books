@@ -3,7 +3,7 @@
 
 # default values
 all:
-#  sfSmarty:
-#    class_path: ../../php/smarty/distribution/libs/
-#    template_extension: .tpl
-#    template_secutrity: false
+  sfSmarty:
+    class_path: ../../php/smarty/distribution/libs/
+    template_extension: .tpl
+    template_secutrity: false
