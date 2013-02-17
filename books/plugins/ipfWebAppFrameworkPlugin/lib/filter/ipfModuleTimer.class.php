@@ -29,9 +29,12 @@ class ipfModuleTimer extends sfFilter
         }
 
         $filterChain->execute($filterChain);
+      	$this->elapsed_time->addTime();
 
-        $elapsed = $this->elapsed_time->getElapsedTime();
-        sfContent::getInstance()->getLogger()->info("elapsed = $elapsed");
+        //- microsec
+        $s = $this->elapsed_time->getElapsedTime();
+        $m = sprintf('%06f', $s);
+        sfContext::getInstance()->getLogger()->info("elapsed = $m us");
     }
 }
 
