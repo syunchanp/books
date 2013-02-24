@@ -31,6 +31,21 @@ class sfSmartyView extends sfPHPView {
 
     const CACHENAMESPACE = 'Smarty';
 
+    private function debug_print($c) {
+
+      $call = array();
+      foreach($c as $k => $f) {
+	if (is_array($f)) {
+	  $call[] = self::debug_print($f);
+	}
+        else if (isset($c['file']) && isset($c['function'])) {
+          $call = $c['file'] . "::" . $c['function'];
+          break;
+	}
+      }
+      return $call;
+    }
+
     /**
      * sfSmartyView::initialize()
      * This method is used instead of sfPHPView::initialze
@@ -43,6 +58,10 @@ class sfSmartyView extends sfPHPView {
      **/
     public function initialize($context, $moduleName, $actionName, $viewName)
     {
+      $c = debug_backtrace();
+      $call = self::debug_print($c);
+      sfContext::getInstance()->getLogger()->info(print_r($call, true));
+
         $this->setExtension(sfConfig::get('app_sfSmartyView_template_extension', '.tpl'));
         parent::initialize($context, $moduleName, $actionName, $viewName);
         if (!self::$smarty) {
@@ -50,17 +69,24 @@ class sfSmartyView extends sfPHPView {
             if (substr($smartyClassPath, -1) != '/') {
                 $smartyClassPath .= '/';
             }
-            require_once($smartyClassPath . 'Smarty.class.php');
-            self::$smarty = new Smarty();
+	    //            require_once($smartyClassPath . 'Smarty.class.php');
+	    //            self::$smarty = new Smarty();
+            require_once($smartyClassPath . 'SmartyBC.class.php');
+            self::$smarty = new SmartyBC();
+	    sfContext::getInstance()->getLogger()->info("sfsmarty before");
             $smartyDirs = sfConfig::get('app_sfSmartyView_cache_dir' , sfConfig::get('sf_cache_dir') . DIRECTORY_SEPARATOR . 'Smarty');
             if (substr($smartyDirs, -1) != '/') {
                 $smartyDirs .= '/';
             }
+	    sfContext::getInstance()->getLogger()->info("sfsmarty before 2 = " . $smartyDirs);
             self::$smarty->compile_dir = $smartyDirs . 'templates_c';
             self::$smarty->cache_dir = $smartyDirs . 'cache';
             self::$templateSecurity = sfConfig::get('app_sfSmartyView_template_security', false);
             self::$smarty->security = self::$templateSecurity;
-            self::$log = sfConfig::get('sf_logging_enabled')? $this->getContext()->getLogger() : false;
+	    sfContext::getInstance()->getLogger()->info("sfsmarty before 3");
+	    //            self::$log = sfConfig::get('sf_logging_enabled')? $this->getContext()->getLogger() : false;
+            self::$log = sfConfig::get('sf_logging_enabled')? sfContext::getInstance()->getLogger() : false;
+	    sfContext::getInstance()->getLogger()->info("sfsmarty before 4");
             if (!file_exists(self::$smarty->compile_dir)) {
                 if (!mkdir(self::$smarty->compile_dir, 0777, true)) {
                     throw new sfCacheException('Unable to create cache directory "' . self::$smarty->compile_dir . '"');
